@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chronofocus</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+<style>
+  /* Fonte e corpo */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  user-select: none;
+  animation: fadeIn 0.7s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+header {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px 30px;
+  box-sizing: border-box;
+  border-bottom: 2px solid #a13a38;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2a2a2a;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 2.4rem;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: 2px;
+}
+
+#xp {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+/* Navegação */
+nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tab-btn {
+  background-color: #a13a38;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 8px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  background-color: #7e2c2a;
+  transform: scale(1.05);
+}
+
+.tab-btn.active {
+  background-color: #fff;
+  color: #a13a38;
+}
+
+/* Conteúdo da aba */
+.tab-content {
+  display: none;
+  width: 100%;
+  max-width: 900px;
+  background-color: #3a3a3a;
+  padding: 30px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  color: #fff;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+#phase {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+/* Progress Bar */
+#progressBar {
+  width: 100%;
+  height: 14px;
+  background-color: #7e2c2a;
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+#progress {
+  height: 100%;
+  width: 0;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
+
+/* Botões */
+button {
+  background-color: #a13a38;
+  border: none;
+  padding: 12px 28px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #f0f0f0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  margin: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-transform: uppercase;
+}
+
+button:hover:not(:disabled) {
+  background-color: #7e2c2a;
+  transform: scale(1.05);
+}
+
+button:disabled {
+  background-color: #5a201f;
+  cursor: not-allowed;
+  color: #999;
+}
+
+/* Inputs */
+input[type="text"] {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  width: 70%;
+  box-sizing: border-box;
+  margin-right: 10px;
+  outline: none;
+  user-select: text;
+}
+
+/* Lista de Metas */
+#metaList, #history {
+  list-style: none;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 15px;
+}
+
+#metaList li, #history li {
+  background-color: #7e2c2a;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #f0f0f0;
+  transition: background 0.3s ease;
+}
+
+#metaList li.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.lixeira {
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  color: #e85a4f;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.lixeira:hover {
+  color: #ff7777;
+}
+
+/* Info */
+#infoContent {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #f0f0f0;
+  max-height: 220px;
+  overflow-y: auto;
+  user-select: text;
+}
+
+/* Scroll personalizado */
+#metaList::-webkit-scrollbar,
+#history::-webkit-scrollbar,
+#infoContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+#metaList::-webkit-scrollbar-thumb,
+#history::-webkit-scrollbar-thumb,
+#infoContent::-webkit-scrollbar-thumb {
+  background-color: #a13a38;
+  border-radius: 20px;
+}
+
+#metaList::-webkit-scrollbar-track,
+#history::-webkit-scrollbar-track,
+#infoContent::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+/* Timer - maior e com mais destaque */
+#timerDisplay {
+  font-size: 5rem; /* Aumentado */
+  font-weight: 600;
+  text-align: center;
+  margin: 10px 0;
+  letter-spacing: 8px;
+  color: #ffffff;
+  text-shadow: 2px 2px 5px #00000088;
+}
+
+#phase {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #f0f0f0;
+}
+
+/* Aba Informações - estilo livre, sem centralizar */
+#infoContent {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #f0f0f0;
+  max-height: 320px;
+  overflow-y: auto;
+  user-select: text;
+  text-align: left; /* <- aqui é o que muda */
+  padding: 5px;
+}
+
+#logo {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  margin: 20px 0;
+}
+
+
+</style>
+</head>
+<body>
+  <header>
+    <h1>Chronofocus</h1>
+    <div id="xp">XP: 0</div>
+  </header>
+
+  <nav>
+    <button class="tab-btn active" onclick="showTab('pomodoroTab', event)">Chronofocus</button>
+    <button class="tab-btn" onclick="showTab('metasTab', event)">Metas</button>
+    <button class="tab-btn" onclick="showTab('historicoTab', event)">Histórico</button>
+    <button class="tab-btn" onclick="showTab('infoTab', event)">Informações</button>
+  </nav>
+
+  <section id="pomodoroTab" class="tab-content active">
+    <input id="taskInput" type="text" placeholder="Digite o nome da tarefa" />
+    <button onclick="saveTaskName()">Salvar Tarefa</button>
+    <div id="taskNameDisplay" style="margin: 10px 0; font-weight: bold; display:none;"></div>
+
+    <div id="logo">Chronofocus</div>
+    <div id="timerDisplay">25:00</div>
+    <div id="progressBar"><div id="progress"></div></div>
+
+    <div>
+      <button onclick="startWork()">Iniciar</button>
+      <button onclick="startBreak()">Descanso</button>
+      <button onclick="pauseTimer()">Pausar</button>
+      <button onclick="resetTimer()">Resetar</button>
+    </div>
+
+    <div id="focusAlert"></div>
+  </section>
+
+  <section id="metasTab" class="tab-content">
+    <input type="text" id="metaInput" placeholder="Nova meta..." />
+    <button onclick="addMeta()">Adicionar</button>
+    <ul id="metaList"></ul>
+  </section>
+
+  <section id="historicoTab" class="tab-content">
+    <button onclick="clearHistory()">Limpar Histórico</button>
+    <ul id="history"></ul>
+  </section>
+
+  <section id="infoTab" class="tab-content">
+    <p>
+      <center>
+      O ChronoFocus é uma versão aprimorada do método Pomodoro, que incorpora funcionalidades avançadas e elementos de gamificação para potencializar a produtividade do usuário. Entre suas principais características estão o controle preciso das fases de trabalho e pausa, o acompanhamento do progresso por meio de um sistema de XP, o registro detalhado do histórico de sessões, a gestão personalizada de metas e alertas para manutenção do foco. Novas atualizações serão implementadas em breve, visando ampliar ainda mais a eficiência e a experiência do usuário.
+      </center>
+    </p>
+  </section>
+  <script>
+    const WORK_TIME = 25 * 60;
+    const BREAK_TIME = 5 * 60;
+    let timer = WORK_TIME;
+    let timerInterval = null;
+    let isRunning = false;
+    let phase = 'trabalho';
+    let xp = parseInt(localStorage.getItem('pomodoroXp')) || 0;
+    let taskName = '';
+    let taskSaved = false;
+    let focusTimeoutId = null;
+  
+    let history = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
+    let metas = JSON.parse(localStorage.getItem('pomodoroMetas')) || [];
+  
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    }
+  
+    function updateTimerDisplay() {
+      document.getElementById('timerDisplay').textContent = formatTime(timer);
+      // document.getElementById('logo').textContent = 'Chronofocus - ' + (phase === 'trabalho' ? 'Foco' : 'Descanso'); 
+      const total = phase === 'trabalho' ? WORK_TIME : BREAK_TIME;
+      const percent = ((total - timer) / total) * 100;
+      document.getElementById('progress').style.width = percent + '%';
+    }
+  
+    function updateXpDisplay() {
+      document.getElementById('xp').textContent = 'XP: ' + xp;
+    }
+  
+    function saveTaskName() {
+      const input = document.getElementById('taskInput');
+      const name = input.value.trim();
+      if (!name) {
+        alert('Digite o nome da tarefa antes de salvar.');
+        return;
+      }
+      taskName = name;
+      taskSaved = true;
+      input.style.display = 'none';
+      document.querySelector('#pomodoroTab button[onclick="saveTaskName()"]').style.display = 'none';
+      const display = document.getElementById('taskNameDisplay');
+      display.textContent = 'Tarefa: ' + taskName;
+      display.style.display = 'block';
+    }
+  
+    function startWork() {
+      if (!taskSaved) {
+        alert('Salve o nome da tarefa antes de iniciar.');
+        return;
+      }
+      phase = 'trabalho';
+      timer = WORK_TIME;
+      startTimer();
+    }
+  
+    // CORREÇÃO AQUI
+    function startBreak() {
+      pauseTimer();      // para qualquer timer que estiver rodando
+      phase = 'pausa';
+      timer = BREAK_TIME;
+      startTimer();
+    }
+  
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      clearInterval(timerInterval);
+      updateFocusTimers();
+      updateTimerDisplay();
+  
+      timerInterval = setInterval(() => {
+        timer--;
+        updateTimerDisplay();
+        if (phase === 'trabalho') {
+         xp++;
+         updateXpDisplay();
+         saveXp();
+         }
+
+        if (timer <= 0) {
+          pauseTimer();
+          alert(`Tempo de ${phase} encerrado.`);
+          history.push({
+            task: phase === 'trabalho' ? taskName : 'Descanso',
+            phase: phase,
+            duration: phase === 'trabalho' ? WORK_TIME : BREAK_TIME,
+            timestamp: Date.now()
+          });
+          saveHistory();
+        }
+      }, 1000);
+    }
+  
+    function pauseTimer() {
+      if (!isRunning) return;
+      isRunning = false;
+      clearInterval(timerInterval);
+      clearTimeout(focusTimeoutId);
+      resetFocusAlert();
+    }
+  
+    function resetTimer() {
+      pauseTimer();
+      timer = phase === 'trabalho' ? WORK_TIME : BREAK_TIME;
+      updateTimerDisplay();
+      resetFocusAlert();
+    }
+  
+   
+    function saveHistory() {
+     localStorage.setItem('pomodoroHistory', JSON.stringify(history));
+     renderHistory();
+     }
+  
+ 
+    function renderHistory() {
+      const ul = document.getElementById('history');
+     ul.innerHTML = '';
+     history.forEach(entry => {
+     const li = document.createElement('li');
+     const date = new Date(entry.timestamp);
+     li.textContent = `${entry.phase} da tarefa "${entry.task}" em ${date.toLocaleString()}`;
+     ul.appendChild(li);
+     })
+    }
+
+  
+     function clearHistory() {
+       if (!confirm('Apagar histórico? XP será zerado.')) return;
+       history = [];
+       xp = 0;
+       updateXpDisplay();
+       saveXp(); // ← Aqui
+       saveHistory();
+      }
+
+    function renderMetas() {
+      const ul = document.getElementById('metaList');
+      ul.innerHTML = '';
+      metas.forEach((meta, idx) => {
+        const li = document.createElement('li');
+        li.textContent = meta.text;
+        if (meta.completed) li.style.textDecoration = 'line-through';
+        li.onclick = () => toggleMeta(idx);
+        const btn = document.createElement('button');
+        btn.textContent = '🗑️';
+        btn.className = 'lixeira';
+        btn.onclick = e => {
+          e.stopPropagation();
+          deleteMeta(idx);
+        };
+        li.appendChild(btn);
+        ul.appendChild(li);
+      });
+    }
+  
+    function addMeta() {
+      const input = document.getElementById('metaInput');
+      const text = input.value.trim();
+      if (!text) {
+        alert('Digite uma meta.');
+        return;
+      }
+      metas.push({ text, completed: false });
+      input.value = '';
+      saveMetas();
+      renderMetas();
+    }
+  
+    function toggleMeta(idx) {
+      metas[idx].completed = !metas[idx].completed;
+      saveMetas();
+      renderMetas();
+    }
+  
+    function deleteMeta(idx) {
+      metas.splice(idx, 1);
+      saveMetas();
+      renderMetas();
+    }
+  
+    function saveMetas() {
+      localStorage.setItem('pomodoroMetas', JSON.stringify(metas));
+    }
+
+    function saveXp() {
+  localStorage.setItem('pomodoroXp', xp);
+}
+
+  
+    // Foco
+    const FOCUS_LOST_TIME = 5 * 60 * 1000;
+    function updateFocusTimers() {
+      clearTimeout(focusTimeoutId);
+      resetFocusAlert();
+      focusTimeoutId = setTimeout(() => {
+        showFocusAlert('Volte ao foco! Você está longe do computador.');
+      }, FOCUS_LOST_TIME);
+    }
+  
+    function resetFocusAlert() {
+      const alertDiv = document.getElementById('focusAlert');
+      alertDiv.style.display = 'none';
+      alertDiv.textContent = '';
+    }
+  
+    function showFocusAlert(msg) {
+      const alertDiv = document.getElementById('focusAlert');
+      alertDiv.style.display = 'block';
+      alertDiv.textContent = msg;
+    }
+  
+    window.addEventListener('blur', () => {
+      if (isRunning && phase === 'trabalho') updateFocusTimers();
+    });
+  
+    window.addEventListener('focus', () => {
+      if (isRunning) {
+        clearTimeout(focusTimeoutId);
+        resetFocusAlert();
+        updateFocusTimers();
+      }
+    });
+  
+    function showTab(tabId, evt) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+  
+    function init() {
+      updateTimerDisplay();
+      updateXpDisplay();
+      renderHistory();
+      renderMetas();
+    }
+  
+    init();
+  </script>
+</body>
+</html>
