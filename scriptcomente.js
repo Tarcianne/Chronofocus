@@ -14,7 +14,10 @@ let focusTimeoutId = null;  // ID do timeout de foco
 
 // Histórico e metas salvos no localStorage
 let history = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
-let metas = JSON.parse(localStorage.getItem('pomodoroMetas')) || [];
+let metas = JSON.parse(localStorage.getItem('pomodoroMetas')) || []; //JSON.parse:transforma dados salvos como texto em dados utilizáveis no código.
+//localStorage.getItem:localStorage é um espaço no navegador para salvar dados localmente (persistem mesmo após fechar a aba).
+//getItem('chave') busca o valor salvo para essa chave.
+//Se não existir nada salvo com essa chave, retorna null.
 
 // 🕒 Converte segundos para MM:SS
 function formatTime(s) {
@@ -60,7 +63,7 @@ function startWork() {
     return;
   }
   phase = 'trabalho';
-  timer = WORK_TIME;
+  timer = WORK_TIME; //Define o tempo de foco de cada ciclo Pomodoro.
   startTimer();
 }
 
@@ -68,7 +71,7 @@ function startWork() {
 function startBreak() {
   pauseTimer();
   phase = 'pausa';
-  timer = BREAK_TIME;
+  timer = BREAK_TIME; //É o tempo padrão de descanso entre os ciclos de foco no Chronofocus.
   startTimer();
 }
 
@@ -94,7 +97,7 @@ function startTimer() {
       alert(`Tempo de ${phase} encerrado.`);
       history.push({
         task: phase === 'trabalho' ? taskName : 'Descanso',
-        phase: phase,
+        phase: phase, //Serve para registrar se a fase era "trabalho" ou "pausa" no histórico.
         duration: phase === 'trabalho' ? WORK_TIME : BREAK_TIME,
         timestamp: Date.now()
       });
@@ -108,7 +111,7 @@ function pauseTimer() {
   if (!isRunning) return;
   isRunning = false;
   clearInterval(timerInterval);
-  clearTimeout(focusTimeoutId);
+  clearTimeout(focusTimeoutId); //Evita que o alerta de "perda de foco" seja exibido desnecessariamente
   resetFocusAlert();
 }
 
@@ -150,17 +153,18 @@ function clearHistory() {
 
 // 🎯 Exibe a lista de metas com opções de marcar ou excluir
 function renderMetas() {
-  const ul = document.getElementById('metaList');
-  ul.innerHTML = '';
-  metas.forEach((meta, idx) => {
-    const li = document.createElement('li');
-    li.textContent = meta.text;
-    if (meta.completed) li.style.textDecoration = 'line-through';
-    li.onclick = () => toggleMeta(idx);
-    const btn = document.createElement('button');
-    btn.textContent = '🗑️';
-    btn.className = 'lixeira';
-    btn.onclick = e => {
+     const ul = document.getElementById('metaList');
+     ul.innerHTML = '';
+     metas.forEach((meta, idx) => { //O forEach é um laço de repetição que executa uma função para cada item da lista metas.
+  //  No contexto do código, isso está sendo usado para montar dinamicamente a lista de metas na tela, com cada <li> representando uma meta.
+     const li = document.createElement('li');
+     li.textContent = meta.text;
+     if (meta.completed) li.style.textDecoration = 'line-through';
+     li.onclick = () => toggleMeta(idx);
+     const btn = document.createElement('button');
+     btn.textContent = '🗑️';
+     btn.className = 'lixeira';
+     btn.onclick = e => {
       e.stopPropagation();
       deleteMeta(idx);
     };
